@@ -8,7 +8,7 @@ public class Main {
         if (!status)
             System.exit(1);
         else {
-
+            System.out.println("All files loaded correctly!");
         }
     }
 
