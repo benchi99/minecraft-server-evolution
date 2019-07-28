@@ -4,6 +4,9 @@ import java.io.File;
 
 class FileManager {
 
+    public static int currentServer = 0;
+    public static int totalServers;
+
     private static File[] serverFiles;
 
     /**
@@ -30,9 +33,15 @@ class FileManager {
                     break;
                 }
                 System.out.print(". OK\n");
+
+                totalServers = serverFiles.length;
             }
         }
         return status;
+    }
+
+    static File getServer(int server) {
+        return serverFiles[server];
     }
 
 }
