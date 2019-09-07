@@ -4,34 +4,26 @@ import java.io.*;
 
 public class ServerInstance extends Thread {
 
-    static File server;
-    static int serverValue;
-    static InputStream is;
-    static OutputStream os;
-    static BufferedWriter bw;
-    static OutputStreamWriter osw;
-    static Process serverProcess;
+    private int serverValue;
+    private OutputStream os;
+    private Process serverProcess;
 
-    boolean end = false;
-
-    public ServerInstance(int server) {
+    ServerInstance(int server) {
         serverValue = server;
     }
 
     @Override
     public void run() {
-        server = FileManager.getServer(serverValue);
+        File server = FileManager.getServer(serverValue);
 
         try {
-            //serverProcess = new ProcessBuilder("cmd.exe -c java -jar \"" + server.getAbsolutePath() + "\" nogui").start();
             serverProcess = Runtime.getRuntime().exec("java -jar \"" + server.getAbsolutePath() + "\" nogui");
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            end = true;
         }
 
         try {
-            is = serverProcess.getInputStream();
+            InputStream is = serverProcess.getInputStream();
             os = serverProcess.getOutputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
@@ -46,18 +38,15 @@ public class ServerInstance extends Thread {
         }
     }
 
-    public static void sendCommand(String command) throws IOException {
-        osw = new OutputStreamWriter(os);
-        bw = new BufferedWriter(osw);
+    void sendCommand(String command) throws IOException {
+        OutputStreamWriter osw = new OutputStreamWriter(os);
+        BufferedWriter bw = new BufferedWriter(osw);
         bw.write(command);
         bw.close();
     }
 
-    public static void stopServer() throws IOException {
-        osw = new OutputStreamWriter(os);
-        bw = new BufferedWriter(osw);
-        bw.write("stop");
-        bw.close();
+    void stopServer() throws IOException {
+        sendCommand("stop");
         try {
             int exitVal = serverProcess.waitFor();
             System.out.println("Server process has terminated with exit code " + exitVal);
@@ -65,6 +54,4 @@ public class ServerInstance extends Thread {
             irre.printStackTrace();
         }
     }
-
-
 }

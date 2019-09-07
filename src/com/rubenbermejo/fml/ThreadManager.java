@@ -3,14 +3,13 @@ package com.rubenbermejo.fml;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class ThreadManager {
+class ThreadManager {
 
-    private static int currentServer = FileManager.currentServer;
+    private static int currentServer = 0;
     private static ServerInstance serverInstance;
     private static boolean on = true;
 
-    public static void start() {
-
+    static void start() {
         loadAndStart(currentServer);
 
         while (on) {
@@ -21,6 +20,7 @@ public class ThreadManager {
                     break;
                 case "skip":
                     skipToNextServer();
+                    break;
                 case "stop":
                     stopServer();
                     break;
@@ -29,14 +29,18 @@ public class ThreadManager {
                     stopServer();
                     System.out.println("Exiting...");
                     stopThreadManager();
+                    break;
                 default:
                     System.out.println("Unknown command");
+                    break;
             }
         }
     }
 
     private static void skipToNextServer() {
-
+        currentServer++;
+        stopServer();
+        loadAndStart(currentServer);
     }
 
     private static void sendCommand(String command) {
@@ -47,7 +51,7 @@ public class ThreadManager {
         }
     }
 
-    static void stopServer() {
+    private static void stopServer() {
         try {
             serverInstance.stopServer();
         } catch (IOException ioe) {
@@ -55,18 +59,16 @@ public class ThreadManager {
         }
     }
 
-    static void loadAndStart(int serverFile) {
+    private static void loadAndStart(int serverFile) {
         serverInstance = new ServerInstance(serverFile);
 
         serverInstance.start();
     }
 
-    public static String readCommand() {
+    private static String readCommand() {
         return new Scanner(System.in).nextLine().toLowerCase();
     }
 
-    public static void stopThreadManager() {    on = false;    }
-
-
+    private static void stopThreadManager() {    on = false;    }
 
 }
