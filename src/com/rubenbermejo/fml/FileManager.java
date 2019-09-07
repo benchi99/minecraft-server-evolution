@@ -22,13 +22,13 @@ class FileManager {
         serverFiles = new File("serverfiles").listFiles();
 
         if (serverFiles == null || serverFiles.length == 0) {
-            System.out.println("FATAL ERROR: No server files found. Exiting...");
+            System.err.println("[FileManager] FATAL ERROR: No server files found. Exiting...");
             status = false;
         } else {
             for (File file : serverFiles) {
-                System.out.print("Checking " + file.getName() + ".");
+                System.out.print("[FileManager] Checking " + file.getName() + ".");
                 if (!file.getName().endsWith(".jar")) {
-                    System.out.println("FATAL ERROR: File " + file.getName() + "is NOT a Java Executable file. Please remove it from the serverfiles directory and restart the application.");
+                    System.out.println("[FileManager] FATAL ERROR: File " + file.getName() + "is NOT a Java Executable file. Please remove it from the serverfiles directory and restart the application.");
                     status = false;
                     break;
                 }

@@ -9,6 +9,8 @@ public class ServerInstance extends Thread {
     static InputStream is;
     static OutputStream os;
     static BufferedWriter bw;
+    static OutputStreamWriter osw;
+    static Process serverProcess;
 
     boolean end = false;
 
@@ -21,32 +23,47 @@ public class ServerInstance extends Thread {
         server = FileManager.getServer(serverValue);
 
         try {
-            Process serverProcess = new ProcessBuilder(server.getAbsolutePath()).start();
+            //serverProcess = new ProcessBuilder("cmd.exe -c java -jar \"" + server.getAbsolutePath() + "\" nogui").start();
+            serverProcess = Runtime.getRuntime().exec("java -jar \"" + server.getAbsolutePath() + "\" nogui");
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            end = true;
+        }
 
+        try {
             is = serverProcess.getInputStream();
             os = serverProcess.getOutputStream();
             InputStreamReader isr = new InputStreamReader(is);
-            OutputStreamWriter osw = new OutputStreamWriter(os);
             BufferedReader br = new BufferedReader(isr);
-            bw = new BufferedWriter(osw);
 
+            String line;
             System.out.println("Starting server version" + server.getName());
-            while (!end) {
-                String line = br.readLine();
+            while ((line = br.readLine()) != null) {
                 System.out.println(line);
             }
-
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
     public static void sendCommand(String command) throws IOException {
+        osw = new OutputStreamWriter(os);
+        bw = new BufferedWriter(osw);
         bw.write(command);
+        bw.close();
     }
 
     public static void stopServer() throws IOException {
+        osw = new OutputStreamWriter(os);
+        bw = new BufferedWriter(osw);
         bw.write("stop");
+        bw.close();
+        try {
+            int exitVal = serverProcess.waitFor();
+            System.out.println("Server process has terminated with exit code " + exitVal);
+        } catch (InterruptedException irre) {
+            irre.printStackTrace();
+        }
     }
 
 

@@ -9,6 +9,7 @@ public class Main {
             System.exit(1);
         else {
             System.out.println("All files loaded correctly!");
+            ThreadManager.start();
         }
     }
 
