@@ -27,3 +27,11 @@ hs_err_pid*
 
 # serverfiles folder
 serverfiles/
+
+# minecraft server files
+world/
+banned-ips.txt
+banned-players.txt
+ops.txt
+server.log
+server.properties
