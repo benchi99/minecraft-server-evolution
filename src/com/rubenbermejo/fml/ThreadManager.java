@@ -37,13 +37,13 @@ class ThreadManager {
         }
     }
 
-    private static void skipToNextServer() {
+    static void skipToNextServer() {
         currentServer++;
         stopServer();
         loadAndStart(currentServer);
     }
 
-    private static void sendCommand(String command) {
+    static void sendCommand(String command) {
         try {
             serverInstance.sendCommand(command);
         } catch (IOException ioe) {
