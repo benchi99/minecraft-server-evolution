@@ -9,8 +9,12 @@ class ThreadManager {
     private static ServerInstance serverInstance;
     private static boolean on = true;
 
+    /**
+     * Starts the ThreadManager, and starts the first server in the list.
+     */
     static void start() {
         loadAndStart(currentServer);
+        Scheduler scheduler = new Scheduler();
 
         while (on) {
             switch (readCommand()) {

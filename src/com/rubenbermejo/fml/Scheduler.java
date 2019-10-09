@@ -1,24 +1,49 @@
 package com.rubenbermejo.fml;
 
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-public class Scheduler {
+class Scheduler {
 
-    private static Timer scheduleTimer = new Timer();
+    // TODO: Change functionality from Timer and TimerTask to ScheduledExecutorService.
+    // SOURCE: https://stackoverflow.com/questions/409932/java-timer-vs-executorservice/409993#409993 <-- That
+    private static Timer timer;
 
-    public void startScheduler() {
-
-        // Do scheduling.
-
-        scheduleTimer.scheduleAtFixedRate(new ScheduleCommand("save-all"), new Date(), 3600000);
-        scheduleTimer.schedule(new JumpToNextServer(), new Date());
+    /**
+     * Starts the scheduler.
+     */
+    Scheduler() {
+        timer = new Timer();
+        
+        timer.scheduleAtFixedRate(new ScheduleCommand("save-all"), getNextAutoSave(), 3600000);
+        timer.schedule(new JumpToNextServer(), getNextUpdate());
     }
 
-    // TODO: ADD DATE MANAGING FUNCTIONS TO CALCULATE DATES
+    /**
+     * Calculates the date when a server folder has to be updated.
+     * @return The date when the update happens.
+     */
+    private Date getNextUpdate() {
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.WEEK_OF_YEAR, 2);
 
-    class ScheduleCommand extends TimerTask {
+        return Date.from(cal.toInstant());
+    }
+
+    /**
+     * Calculates the date when an autosave has to happen.
+     * @return The date when the autosave happens.
+     */
+    private Date getNextAutoSave () {
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.HOUR_OF_DAY, 2);
+
+        return Date.from(cal.toInstant());
+    }
+
+    /**
+     * Class that executes a command in the current server thread.
+     */
+    static class ScheduleCommand extends TimerTask {
 
         private String command;
 
@@ -32,13 +57,16 @@ public class Scheduler {
         }
     }
 
-    class JumpToNextServer extends TimerTask {
+    /**
+     * Class that stops the server that is currently running and starts the next version.
+     */
+    static class JumpToNextServer extends TimerTask {
 
         @Override
         public void run() {
-            ThreadManager.sendCommand("Updating to next version...");
+            ThreadManager.sendCommand("say [MSE] Updating to next version...");
             ThreadManager.skipToNextServer();
-            scheduleTimer.schedule(new JumpToNextServer(), new Date());
+            timer.schedule(new JumpToNextServer(), new Date());
         }
     }
 

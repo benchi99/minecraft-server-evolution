@@ -39,4 +39,9 @@ class FileManager {
         return serverFiles[server];
     }
 
+    public String listServers() {
+        // TODO: Code the damn thing
+        return null;
+    }
+
 }
