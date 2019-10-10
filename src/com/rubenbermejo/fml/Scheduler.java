@@ -18,10 +18,7 @@ class Scheduler {
          scheduler = Executors.newScheduledThreadPool(2);
 
         scheduler.scheduleAtFixedRate(new ScheduledCommand("save-all"), 0, getNextAutoSave().getTime(), TimeUnit.MILLISECONDS);
-//        timer = new Timer();
-//
-//        timer.scheduleAtFixedRate(new ScheduleCommand("save-all"), getNextAutoSave(), 3600000);
-//        timer.schedule(new JumpToNextServer(), getNextUpdate());
+        scheduler.schedule(new ScheduledServerUpdate(), getNextUpdate().getTime(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -45,59 +42,29 @@ class Scheduler {
 
         return Date.from(cal.toInstant());
     }
-//
-//    /**
-//     * Class that executes a command in the current server thread.
-//     */
-//    static class ScheduleCommand extends TimerTask {
-//
-//        private String command;
-//
-//        ScheduleCommand(String command) {
-//            this.command = command;
-//        }
-//
-//        @Override
-//        public void run() {
-//            ThreadManager.sendCommand(command);
-//        }
-//    }
-//
-//    /**
-//     * Class that stops the server that is currently running and starts the next version.
-//     */
-//    static class JumpToNextServer extends TimerTask {
-//
-//        @Override
-//        public void run() {
-//            ThreadManager.sendCommand("say [MSE] Updating to next version...");
-//            ThreadManager.skipToNextServer();
-//            timer.schedule(new JumpToNextServer(), new Date());
-//        }
-//    }
-}
 
+    static class ScheduledCommand implements Runnable {
+        private String command;
 
-class ScheduledCommand implements Runnable {
-    private String command;
+        ScheduledCommand(String command) {
+            this.command = command;
+        }
 
-    ScheduledCommand(String command) {
-        this.command = command;
+        @Override
+        public void run() {
+            ThreadManager.sendCommand(command);
+        }
     }
 
-    @Override
-    public void run() {
-        ThreadManager.sendCommand(command);
+    class ScheduledServerUpdate implements Runnable {
+        @Override
+        public void run() {
+            ThreadManager.sendCommand("say [MSE] Updating to next version...");
+            ThreadManager.skipToNextServer();
+            scheduler.schedule(new ScheduledServerUpdate(), getNextUpdate().getTime(), TimeUnit.MILLISECONDS);
+
+        }
     }
 }
 
-class ScheduledServerUpdate implements Runnable {
-    @Override
-    public void run() {
-        ThreadManager.sendCommand("say [MSE] Updating to next version...");
-        ThreadManager.skipToNextServer();
-//            timer.schedule(new JumpToNextServer(), new Date());
-
-    }
-}
 
