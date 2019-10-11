@@ -2,12 +2,19 @@ package com.rubenbermejo.fml;
 
 import java.io.*;
 
+/**
+ * Class that handles a Server Instance
+ */
 public class ServerInstance extends Thread {
 
     private int serverValue;
     private OutputStream os;
     private Process serverProcess;
 
+    /**
+     * ServerInstance needs a server value so it knows which one to start.
+     * @param server Server value.
+     */
     ServerInstance(int server) {
         serverValue = server;
     }
@@ -38,6 +45,12 @@ public class ServerInstance extends Thread {
         }
     }
 
+    /**
+     * Sends a command to the attached server process.
+     *
+     * @param command Command to send.
+     * @throws IOException I/O Error.
+     */
     void sendCommand(String command) throws IOException {
         OutputStreamWriter osw = new OutputStreamWriter(os);
         BufferedWriter bw = new BufferedWriter(osw);
@@ -45,6 +58,11 @@ public class ServerInstance extends Thread {
         bw.close();
     }
 
+    /**
+     * Stops the server and waits for its exit.
+     *
+     * @throws IOException I/O Error.
+     */
     void stopServer() throws IOException {
         sendCommand("stop");
         try {

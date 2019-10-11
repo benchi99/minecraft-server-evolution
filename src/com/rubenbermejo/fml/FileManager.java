@@ -35,10 +35,22 @@ class FileManager {
         return status;
     }
 
+    /**
+     * Returns a server File object.
+     *
+     * @param server Index
+     * @return Server File object.
+     */
     static File getServer(int server) {
         return serverFiles[server];
     }
 
+    /**
+     * Lists all available servers.
+     *
+     * // TODO: NOT IMPLEMENTED
+     * @return List of servers.
+     */
     public String listServers() {
         // TODO: Code the damn thing
         return null;

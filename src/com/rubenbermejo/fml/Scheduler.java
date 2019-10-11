@@ -7,15 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 class Scheduler {
 
-    // TODO: Change functionality from Timer and TimerTask to ScheduledExecutorService.
-    // SOURCE: https://stackoverflow.com/questions/409932/java-timer-vs-executorservice/409993#409993 <-- That
-//    private static Timer timer;
     private final ScheduledExecutorService scheduler;
     /**
      * Starts the scheduler.
      */
     Scheduler() {
-         scheduler = Executors.newScheduledThreadPool(2);
+        scheduler = Executors.newScheduledThreadPool(2);
 
         scheduler.scheduleAtFixedRate(new ScheduledCommand("save-all"), 0, getNextAutoSave().getTime(), TimeUnit.MILLISECONDS);
         scheduler.schedule(new ScheduledServerUpdate(), getNextUpdate().getTime(), TimeUnit.MILLISECONDS);
@@ -43,6 +40,9 @@ class Scheduler {
         return Date.from(cal.toInstant());
     }
 
+    /**
+     * Task that runs a command when scheduled.
+     */
     static class ScheduledCommand implements Runnable {
         private String command;
 
@@ -56,6 +56,9 @@ class Scheduler {
         }
     }
 
+    /**
+     * Task that performs a server update.
+     */
     class ScheduledServerUpdate implements Runnable {
         @Override
         public void run() {

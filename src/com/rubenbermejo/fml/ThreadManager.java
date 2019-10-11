@@ -41,12 +41,19 @@ class ThreadManager {
         }
     }
 
+    /**
+     * Skips to the next server in the File array.
+     */
     static void skipToNextServer() {
         currentServer++;
         stopServer();
         loadAndStart(currentServer);
     }
 
+    /**
+     * Sends a command to the currently active server.
+     * @param command Command to send.
+     */
     static void sendCommand(String command) {
         try {
             serverInstance.sendCommand(command);
@@ -55,6 +62,9 @@ class ThreadManager {
         }
     }
 
+    /**
+     * Stops the currently active server.
+     */
     private static void stopServer() {
         try {
             serverInstance.stopServer();
@@ -63,16 +73,27 @@ class ThreadManager {
         }
     }
 
+    /**
+     * Starts a new server version.
+     * @param serverFile
+     */
     private static void loadAndStart(int serverFile) {
         serverInstance = new ServerInstance(serverFile);
 
         serverInstance.start();
     }
 
+    /**
+     * Reads a command in the standard system input.
+     * @return
+     */
     private static String readCommand() {
         return new Scanner(System.in).nextLine().toLowerCase();
     }
 
+    /**
+     * Stops the Thread Manager.
+     */
     private static void stopThreadManager() {    on = false;    }
 
 }
