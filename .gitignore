@@ -19,6 +19,9 @@
 *.tar.gz
 *.rar
 
+# lck files
+*.lck
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
@@ -27,6 +30,12 @@ hs_err_pid*
 
 # serverfiles folder
 serverfiles/
+
+# output folder
+out/
+
+# main folder in src
+/src/main
 
 # minecraft server files
 world/
